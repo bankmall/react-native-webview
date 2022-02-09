@@ -1216,6 +1216,32 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
 
       final WebView newWebView = new WebView(view.getContext());
       final WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+      
+      WebSettings webSettings = newWebView.getSettings();
+      webSettings.setJavaScriptEnabled(true);
+
+      final Dialog dialog = new Dialog(view.getContext());
+      dialog.setContentView(newWebView);
+
+      ViewGroup.LayoutParams params = dialog.getWindow().getAttributes();
+      params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+      params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+      dialog.getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+      dialog.show();
+      newWebView.setWebChromeClient(new WebChromeClient() {
+        @Override
+        public void onCloseWindow(WebView window) {
+          dialog.dismiss();
+        }
+      });
+
+      newWebView.setWebViewClient(new WebViewClient() {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+          return false;
+        }
+      });
+
       transport.setWebView(newWebView);
       resultMsg.sendToTarget();
 
