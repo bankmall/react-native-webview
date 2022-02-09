@@ -3,6 +3,7 @@ package com.reactnativecommunity.webview;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
