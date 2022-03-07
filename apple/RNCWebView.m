@@ -310,9 +310,23 @@ NSString *const CUSTOM_SELECTOR = @"_CUSTOM_SELECTOR_";
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
   if (!navigationAction.targetFrame.isMainFrame) {
-    [webView loadRequest:navigationAction.request];
+      WKUserContentController *userController = [[WKUserContentController alloc] init];
+      configuration.preferences.javaScriptCanOpenWindowsAutomatically = YES;
+      configuration.userContentController = userController;
+
+      WKWebView *newWebView = [[WKWebView alloc] initWithFrame:self.webView.frame configuration:configuration];
+
+      newWebView.navigationDelegate = self;
+      newWebView.UIDelegate = self;
+      [self.superview addSubview:newWebView];    // 눈에 보여지도록
+
+      return newWebView;
   }
   return nil;
+}
+
+-(void)webViewDidClose:(WKWebView *)webView {
+    [webView removeFromSuperview];
 }
 
 - (WKWebViewConfiguration *)setUpWkWebViewConfig
