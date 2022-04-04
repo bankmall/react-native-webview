@@ -1236,9 +1236,20 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
         }
       });
 
+
       newWebView.setWebViewClient(new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+          if (request.getUrl().getScheme().equals("intent")) {
+            try {
+              Intent intent = Intent.parseUri(request.getUrl().toString(), Intent.URI_INTENT_SCHEME);
+              intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+              mReactContext.startActivity(intent);
+            } catch (Exception ex) {
+              ex.printStackTrace();
+            }
+            return true;
+          }
           return false;
         }
       });
